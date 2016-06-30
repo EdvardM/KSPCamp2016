@@ -1,3 +1,7 @@
+// Intended to be used /w Kerbal X Stock rocket
+// Made for KSP Camp 2016
+
+set terminal:width to 60.
 clearscreen.
 
 print "Set throttle to full".
@@ -10,34 +14,51 @@ local targetApoapsis is 90000.
 local suunta is 87.
 lock steering to heading(90, suunta). // 90 = ita, kallistuskulma suunta
 
-until ship:apoapsis >= targetApoapsis {
-  local hasFuel is true. // oleta, että moottorilla on polttoainetta
+function adjustPitch {
+  parameter height, pitch.
+
+  if altitude > height {
+    lock steering to heading(90, pitch).
+  }
+}
+
+function autoStage {
   local engineList is "".
 
-  list engines in engineList.
-  for eng in engineList {
-    if eng:flameout {
-      set hasFuel to false. break.
+  list engines in engineList. // tallentaa kaikki moottorit engineList:iin
+  for eng in engineList { // käydään läpi kaikki moottorit
+    if eng:flameout { // moottorista polttoaine loppu?
+      stage. wait 0.1.
+      break.
     }
   }
-  if not hasFuel { stage. } // polttoaine loppu -> seuraava vaihe
+}
 
-  if altitude >  5000 { set suunta to 80. }
-  if altitude > 15000 { set suunta to 60. }
-  if altitude > 25000 { set suunta to 40. }
-  if altitude > 35000 { set suunta to 20. }
-  if altitude > 45000 { set suunta to  0. }
+when altitude > 50000 then { // aktivoi toiminnot 1 ja 2
+  AG1 on.
+  AG2 on.
+}
+
+until ship:apoapsis >= targetApoapsis {
+  autoStage().
+
+  adjustPitch(5000,  80).
+  adjustPitch(15000, 60).
+  adjustPitch(25000, 40).
+  adjustPitch(35000, 20).
+  adjustPitch(45000,  0).
 
   wait 0.1.
 }
 
-print "Raise periapsis to sufficent altitude".
-lock steering to prograde.
+print "Coasting to apoapsis".
 lock throttle to 0.
-wait until eta:apoapsis < 15. // sekunteja
+lock steering to heading(90, 0). // lukitse suunta kohti horisonttia
+wait until eta:apoapsis < 20. // sekunteja
+
+print "Raise periapsis to sufficent altitude".
 lock throttle to 1.0.
 wait until periapsis > 75000.
-lock throttle to 0.
-print "Finished".
 
-wait 300. // jotta kOS:n kontrolli pysyy
+lock throttle to 0.
+set ship:control:pilotmainthrottle to 0. // manuaalinen kaasu pois
