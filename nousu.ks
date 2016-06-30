@@ -36,6 +36,8 @@ lock steering to prograde.
 lock throttle to 0.
 wait until eta:apoapsis < 15. // sekunteja
 lock throttle to 1.0.
+wait until periapsis > 75000.
+lock throttle to 0.
+print "Finished".
 
 wait 300. // jotta kOS:n kontrolli pysyy
-
