@@ -1,4 +1,8 @@
-function decrease_periapsis {
+// Intended to be used /w Kerbal X Stock rocket
+// Made for KSP Camp 2016
+
+// functions
+function decreasePeriapsis {
   parameter desiredAlt.
 
   print "Turning to retrograde".
@@ -17,22 +21,21 @@ function decrease_periapsis {
   lock throttle to 0.
 }
 
-
-
-
-
-function final_descent {
+function finalDescent {
   parameter parachuteAlt.
   wait until altitude < parachuteAlt.
 
-  print "laukaistaan varjo".
-  // bug: ei toimi nykyisellä kos-versiolla. ks.
-  // http://bit.ly/29sHrPh
+  print "Deploy parachutes".
+  // bug: ei toimi nykyisellä kos-versiolla. ks. http://bit.ly/29sHrPh
   ag5 on. // olettaa, että laskuvarjo on action groupissa 5
 }
 
-print "Lasketaan periapsis 40:een kilometriin".
-decrease_periapsis(40000).
+// Main
+local targetPeriapsis is 40000.
+local chuteDeployAltitude is 3000.
 
-print "odotetaan että korkeus on alle 5km".
-final_descent(3000).
+print "Decrease periapsis to " targetPeriapsis.
+decreasePeriapsis(targetPeriapsis).
+
+print "Waiting until altitude is below " + chuteDeployAltitude.
+finalDescent(chuteDeployAltitude).
