@@ -28,7 +28,7 @@ function final_descent {
   print "laukaistaan varjo".
   // bug: ei toimi nykyisellä kos-versiolla. ks.
   // http://bit.ly/29sHrPh
-  toggle ag5.
+  ag5 on. // olettaa, että laskuvarjo on action groupissa 5
 }
 
 print "Lasketaan periapsis 40:een kilometriin".
